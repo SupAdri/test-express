@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>WebSocket con Express</title>
+</head>
+<body>
+  <h3>Chat WebSocket</h3>
+  <input id="input" placeholder="Escribe un mensaje" />
+  <button id="send">Enviar</button>
+  <ul id="log"></ul>
+    <script src="app.js"></script>
+  <script>
+    const ws = new WebSocket(`ws://${location.host}`);
+
+    ws.addEventListener('open', () => {
+      addLog('Conectado al servidor');
+    });
+
+    ws.addEventListener('message', (evt) => {
+      const data = JSON.parse(evt.data);
+      addLog(`[${data.type}] ${data.message}`);
+    });
+
+    document.getElementById('send').onclick = () => {
+      const text = document.getElementById('input').value;
+      if (!text) return;
+      ws.send(text);
+      document.getElementById('input').value = '';
+    };
+
+    function addLog(msg) {
+      const li = document.createElement('li');
+      li.textContent = msg;
+      document.getElementById('log').appendChild(li);
+    }
+  </script>
+</body>
+</html>
